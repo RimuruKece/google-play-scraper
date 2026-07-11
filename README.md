@@ -1,7 +1,8 @@
 # google-play-scraper [![workflow](https://github.com/facundoolano/google-play-scraper/actions/workflows/tests.yml/badge.svg)](https://github.com/facundoolano/google-play-scraper/actions/workflows/tests.yml)
-Node.js module to scrape application data from the Google Play store.
 
-⚠️ I don't use or actively maintain this project anymore, other than reviewing community provided PRs. Expect the parser to break when Google Play's layout changes.
+Node.js module to scrape application data from the Google Play store. Written in TypeScript with full type definitions.
+
+⚠️ **Maintenance notice:** I don't use or actively maintain this project anymore, other than reviewing community-provided PRs. Expect the parser to break when Google Play's layout changes.
 
 ### Related projects
 
@@ -10,45 +11,72 @@ Node.js module to scrape application data from the Google Play store.
 * [google-play-api](https://github.com/facundoolano/google-play-api): a RESTful API to consume the data produced by this library.
 
 ## Installation
-```
+
+```bash
 npm install google-play-scraper
 ```
 
 ## Usage
+
+All methods are available as named exports or as a default export. All methods return promises.
+
+```javascript
+import gplay from "google-play-scraper";
+// or
+import { app, list, search, developer, suggest, reviews, similar, permissions, datasafety, categories } from "google-play-scraper";
+```
+
 Available methods:
-- [app](#app): Retrieves the full detail of an application.
-- [list](#list): Retrieves a list of applications from one of the collections at Google Play.
-- [search](#search): Retrieves a list of apps that results of searching by the given term.
-- [developer](#developer): Returns the list of applications by the given developer name.
-- [suggest](#suggest): Given a string returns up to five suggestion to complete a search query term.
-- [reviews](#reviews): Retrieves a page of reviews for a specific application.
-- [similar](#similar): Returns a list of similar apps to the one specified.
-- [permissions](#permissions): Returns the list of permissions an app has access to.
-- [datasafety](#datasafety): Returns the data safety information of an app.
-- [categories](#categories): Retrieve a full list of categories present from dropdown menu on Google Play.
+
+- [`app`](#app): Retrieves the full detail of an application.
+- [`list`](#list): Retrieves a list of applications from one of the collections at Google Play.
+- [`search`](#search): Retrieves a list of apps that result from searching by the given term.
+- [`developer`](#developer): Returns the list of applications by the given developer name.
+- [`suggest`](#suggest): Given a string returns up to five suggestions to complete a search query term.
+- [`reviews`](#reviews): Retrieves a page of reviews for a specific application.
+- [`similar`](#similar): Returns a list of similar apps to the one specified.
+- [`permissions`](#permissions): Returns the list of permissions an app has access to.
+- [`datasafety`](#datasafety): Returns the data safety information of an app.
+- [`categories`](#categories): Retrieve a full list of categories present from dropdown menu on Google Play.
+
+### App Options
+
+Common options available for most methods:
+
+* `appId`: The Google Play id of the application (the `?id=` parameter on the URL).
+* `devId`: The name or ID of the developer.
+* `lang` (optional, defaults to `'en'`): The two letter language code used to fetch the data.
+* `country` (optional, defaults to `'us'`): The two letter country code used to fetch the data.
+* `throttle` (optional): Upper bound to the amount of requests per second.
+* `requestOptions` (optional): Extra options passed to the underlying HTTP request (e.g., headers, timeout).
 
 ### app
 
-Retrieves the full detail of an application. Options:
-
-* `appId`: the Google Play id of the application (the `?id=` parameter on the url).
-* `lang` (optional, defaults to `'en'`): the two letter language code in which to fetch the app page.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the applications. Needed when the app is available only in some countries.
-
-Example:
+Retrieves the full detail of an application.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.app({appId: 'com.google.android.apps.translate'})
-  .then(console.log, console.log);
+const result = await gplay.app({ appId: 'com.google.android.apps.translate' });
+console.log(result);
 ```
-Results:
+
+Options:
+
+* `appId` (required): The Google Play id of the application.
+* `lang` (optional, defaults to `'en'`): Two letter language code.
+* `country` (optional, defaults to `'us'`): Two letter country code.
+* `throttle` (optional): Requests per second limit.
+* `requestOptions` (optional): Extra HTTP request options.
+
+Returns: `Promise<AppItemFullDetail>`
+
+Example result:
 
 ```javascript
 {
   title: 'Google Translate',
-  description: 'Translate between 103 languages by typing\r\n...' ,
+  description: 'Translate between 103 languages by typing...',
   descriptionHTML: 'Translate between 103 languages by typing<br>...',
   summary: 'The world is closer than ever with over 100 languages',
   installs: '500,000,000+',
@@ -60,6 +88,7 @@ Results:
   reviews: 1614618,
   histogram: { '1': 370042, '2': 145558, '3': 375720, '4': 856865, '5': 5063481 },
   price: 0,
+  originalPrice: undefined,
   free: true,
   currency: 'USD',
   priceText: 'Free',
@@ -67,7 +96,6 @@ Results:
   IAPRange: undefined,
   androidVersion: 'VARY',
   androidVersionText: 'Varies with device',
-  androidMaxVersion: 'VARY',
   developer: 'Google LLC',
   developerId: '5700313618786177705',
   developerEmail: 'translate-android-support@google.com',
@@ -89,7 +117,7 @@ Results:
   headerImage: 'https://lh3.googleusercontent.com/e4Sfy0cOmqpike76V6N6n-tDVbtbmt6MxbnbkKBZ_7hPHZRfsCeZhMBZK8eFDoDa1Vf-',
   screenshots: [
     'https://lh3.googleusercontent.com/dar060xShkqnJjWC2j_EazWBpLo28X4IUWCYXZgS2iXes7W99LkpnrvIak6vz88xFQ',
-    'https://lh3.googleusercontent.com/VnzidUTSWK_yhpNK0uqTSfpVgow5CsZOnBdN3hIpTxODdlZg1VH1K4fEiCrdUQEZCV0',
+    'https://lh3.googleusercontent.com/VnzidUTSWK_yhpNK0uqTSfpVgow5CsZOnBdN3hIpTxODdlZg1VH1K4fEiCrdUQEZCV0'
   ],
   video: undefined,
   videoImage: undefined,
@@ -105,50 +133,43 @@ Results:
   preregister: false,
   earlyAccessEnabled: false,
   isAvailableInPlayPass: false,
-  editorsChoice: true,
-  features: [
-    {
-      title: 'Uses Google Play Games',
-      description: 'For automatic sign-in, leaderboards, achievements, and more.'
-    },
-    {
-      title: 'Achievements',
-      description: 'Grants you achievements for completing goals and skill-based challenges.'
-    }
-  ],
   appId: 'com.google.android.apps.translate',
-  url: 'https://play.google.com/store/apps/details?id=com.google.android.apps.translate&hl=en&gl=us',
-  isAvailableInPlayPass: false
+  url: 'https://play.google.com/store/apps/details?id=com.google.android.apps.translate&hl=en&gl=us'
 }
 ```
 
 ### list
-Retrieve a list of applications from one of the collections at Google Play. Options:
 
-* `collection` (optional, defaults to `collection.TOP_FREE`): the Google Play collection that will be retrieved. Available options can bee found [here](https://github.com/facundoolano/google-play-scraper/blob/b7669f78766b8306896447ddbe8797fe36eae49f/lib/constants.js#L67).
-* `category` (optional, defaults to no category): the app category to filter by. Available options can bee found [here](https://github.com/facundoolano/google-play-scraper/blob/b7669f78766b8306896447ddbe8797fe36eae49f/lib/constants.js#L10).
-* `age` (optional, defaults to no age filter): the age range to filter the apps (only for FAMILY and its subcategories). Available options are `age.FIVE_UNDER`, `age.SIX_EIGHT`, `age.NINE_UP`.
-* `num` (optional, defaults to 500): the amount of apps to retrieve.
-* `lang` (optional, defaults to `'en'`): the two letter language code used to retrieve the applications.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the applications.
-* `fullDetail` (optional, defaults to `false`): if `true`, an extra request will be made for every resulting app to fetch its full detail.
-
-Example:
+Retrieve a list of applications from one of the collections at Google Play.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.list({
-    category: gplay.category.GAME_ACTION,
-    collection: gplay.collection.TOP_FREE,
-    num: 2
-  })
-  .then(console.log, console.log);
+const results = await gplay.list({
+  category: gplay.category.GAME_ACTION,
+  collection: gplay.collection.TOP_FREE,
+  num: 2
+});
+console.log(results);
 ```
-Results:
+
+Options:
+
+* `collection` (optional, defaults to `gplay.collection.TOP_FREE`): The Google Play collection to retrieve. Available options: `TOP_FREE`, `TOP_PAID`, `GROSSING`.
+* `category` (optional, defaults to `gplay.category.APPLICATION`): The app category to filter by. Available categories are in `gplay.category`.
+* `age` (optional): Age range filter (only for FAMILY and subcategories). Options: `gplay.age.FIVE_UNDER`, `gplay.age.SIX_EIGHT`, `gplay.age.NINE_UP`.
+* `num` (optional, defaults to `500`): The amount of apps to retrieve.
+* `fullDetail` (optional, defaults to `false`): If `true`, an extra request will be made for every resulting app to fetch its full detail.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<AppListItem[]>`
+
+Example result:
 
 ```javascript
- [ { url: 'https://play.google.com/store/apps/details?id=com.playappking.busrush',
+[
+  {
+    url: 'https://play.google.com/store/apps/details?id=com.playappking.busrush',
     appId: 'com.playappking.busrush',
     summary: 'Bus Rush is an amazing running game for Android! Start running now!',
     developer: 'Play App King',
@@ -158,48 +179,42 @@ Results:
     score: 3.9,
     scoreText: '3.9',
     priceText: 'Free',
-    free: false },
-  { url: 'https://play.google.com/store/apps/details?id=com.yodo1.crossyroad',
-    appId: 'com.yodo1.crossyroad',
-    title: 'Crossy Road',
-    summary: 'Embark on an action arcade, endless runner journey!',
-    developer: 'Yodo1 Games',
-    developerId: 'Yodo1+Games',
-    icon: 'https://lh3.googleusercontent.com/doHqbSPNekdR694M-4rAu9P2B3V6ivff76fqItheZGJiN4NBw6TrxhIxCEpqgO3jKVg=w340',
-    score: 4.5,
-    scoreText: '4.5',
-    priceText: 'Free',
-    free: false } ]
+    free: false
+  },
+  ...
+]
 ```
 
 ### search
-Retrieves a list of apps that results of searching by the given term. Options:
 
-* `term`: the term to search by.
-* `num` (optional, defaults to 20, max is 250): the amount of apps to retrieve.
-* `lang` (optional, defaults to `'en'`): the two letter language code used to retrieve the applications.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the applications.
-* `fullDetail` (optional, defaults to `false`): if `true`, an extra request will be made for every resulting app to fetch its full detail.
-* `price` (optional, defaults to `all`): allows to control if the results apps are free, paid or both.
-    * `all`: Free and paid
-    * `free`: Free apps only
-    * `paid`: Paid apps only
-
-
-Example:
+Retrieves a list of apps that result from searching by the given term.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.search({
-    term: "panda",
-    num: 2
-  }).then(console.log, console.log);
+const results = await gplay.search({
+  term: "panda",
+  num: 2
+});
+console.log(results);
 ```
-Results:
+
+Options:
+
+* `term` (required): The term to search by.
+* `num` (optional, defaults to `20`, max `250`): The amount of apps to retrieve.
+* `price` (optional, defaults to `'all'`): Filter by price: `'all'`, `'free'`, `'paid'`.
+* `fullDetail` (optional, defaults to `false`): If `true`, fetch full detail for each app.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<AppListItem[]>`
+
+Example result:
 
 ```javascript
-[ { url: 'https://play.google.com/store/apps/details?id=com.snailgameusa.tp',
+[
+  {
+    url: 'https://play.google.com/store/apps/details?id=com.snailgameusa.tp',
     appId: 'com.snailgameusa.tp',
     summary: 'An exciting action adventure RPG of Panda proportions!',
     title: 'Taichi Panda',
@@ -209,42 +224,40 @@ Results:
     score: 4.1,
     scoreText: '4.1',
     priceText: 'Free',
-    free: true },
-  { url: 'https://play.google.com/store/apps/details?id=com.sgn.pandapop.gp',
-    appId: 'com.sgn.pandapop.gp',
-    summary: 'Plan your every pop to rescue baby pandas from the evil Baboon!',
-    title: 'Panda Pop',
-    developer: 'SGN',
-    developerId: '5509190841173705883',
-    icon: 'https://lh5.ggpht.com/uAAUBzEHtD_-mTxomL2wFxb5VSdtNllk9M4wjVdTGMD8pH79RtWGYQYrrtfVTjq7PV7M=w340',
-    score: 4.2,
-    scoreText: '4.2',
-    priceText: 'Free',
-    free: true } ]
+    free: true
+  },
+  ...
+]
 ```
 
 ### developer
-Returns the list of applications by the given developer name. Options:
 
-* `devId`: the name of the developer.
-* `lang` (optional, defaults to `'en'`): the two letter language code in which to fetch the app list.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the applications. Needed when the app is available only in some countries.
-* `num` (optional, defaults to 60): the amount of apps to retrieve.
-* `fullDetail` (optional, defaults to `false`): if `true`, an extra request will be made for every resulting app to fetch its full detail.
-
-Example:
+Returns the list of applications by the given developer name.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.developer({devId: "DxCo Games"}).then(console.log);
+const results = await gplay.developer({ devId: "DxCo Games" });
+console.log(results);
 ```
 
-Results:
+Options:
+
+* `devId` (required): The name or ID of the developer.
+* `num` (optional, defaults to `60`): The amount of apps to retrieve.
+* `fullDetail` (optional, defaults to `false`): If `true`, fetch full detail for each app.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<AppListItem[]>`
+
+Example result:
+
 ```javascript
-[ { url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies2',
+[
+  {
+    url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies2',
     appId: 'com.dxco.pandavszombies2',
-    title: 'Panda vs Zombie 2 Panda\'s back',
+    title: "Panda vs Zombie 2 Panda's back",
     summary: 'Help Rocky the Panda warrior to fight zombies again!',
     developer: 'DxCo Games',
     developerId: 'DxCo+Games',
@@ -252,98 +265,91 @@ Results:
     score: 3.9,
     scoreText: '3.9',
     priceText: 'Free',
-    free: true },
-  { url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies',
-    appId: 'com.dxco.pandavszombies',
-    title: 'Panda vs Zombie: panda ftw',
-    summary: 'Help Rocky the Panda warrior to fight zombie games and save the Panda kind.',
-    developer: 'DxCo Games',
-    developerId: 'DxCo+Games',
-    icon: 'https://lh6.ggpht.com/5mI27oolnooL__S3ns9qAf_6TsFNExMtUAwTKz6prWCxEmVkmZZZwe3lI-ZLbMawEJh3=w340',
-    score: 4.5,
-    scoreText: '4.5',
-    priceText: 'Free',
-    free: true } ]
+    free: true
+  },
+  ...
+]
 ```
 
 ### suggest
-Given a string returns up to five suggestion to complete a search query term. Options:
 
-* `term`: the term to get suggestions for.
-* `lang` (optional, defaults to `'en'`): the two letter language code used to retrieve the suggestions.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the suggestions.
+Given a string returns up to five suggestions to complete a search query term.
 
-Example:
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.suggest({term: 'panda'}).then(console.log);
+const suggestions = await gplay.suggest({ term: 'panda' });
+console.log(suggestions);
 ```
-
-Results:
-```javascript
-[ 'panda pop',
-  'panda',
-  'panda games',
-  'panda run',
-  'panda pop for free' ]
-```
-### reviews
-Retrieves a page of reviews for a specific application.
-
-Note that this method returns reviews in a specific language (english by default), so you need to try different languages to get more reviews. Also, the counter displayed in the Google Play page refers to the total number of 1-5 stars ratings the application has, not the written reviews count. So if the app has 100k ratings, don't expect to get 100k reviews by using this method.
-
-You can get all reviews at once, by sending the `num` parameter (i.g. 5000), or paginated reviews (with 150 per page), by setting the `pagination` parameter to true;
-
-You`ll have to choose wich method is better for your use case.
-
-By setting `num` + `paginate`, the num parameter will be ignored and you will receive a paginated response instead.
 
 Options:
 
-* `appId`: Unique application id for Google Play. (e.g. id=com.mojang.minecraftpe maps to Minecraft: Pocket Edition game).
-* `lang` (optional, defaults to `'en'`): the two letter language code in which to fetch the reviews.
-* `country` (optional, defaults to `'us'`): the two letter country code in which to fetch the reviews.
-* `sort` (optional, defaults to `sort.NEWEST`): The way the reviews are going to be sorted. Accepted values are: `sort.NEWEST`, `sort.RATING` and `sort.HELPFULNESS`.
-* `num` (optional, defaults to `100`): Quantity of reviews to be captured.
-* `paginate` (optional, defaults to `false`): Defines if the result will be paginated
-* `nextPaginationToken` (optional, defaults to `null`): The next token to paginate
+* `term` (required): The term to get suggestions for.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
 
-Example:
+Returns: `Promise<string[]>`
+
+Example result:
+
+```javascript
+[ 'panda pop', 'panda', 'panda games', 'panda run', 'panda pop for free' ]
+```
+
+### reviews
+
+Retrieves a page of reviews for a specific application.
+
+Note: This method returns reviews in a specific language (English by default). To get more reviews, try different languages. Also, the counter displayed on the Google Play page refers to the total number of 1-5 star ratings, not written reviews count.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-// This example will return 3000 reviews
-// on a single call
-gplay.reviews({
+// Get 3000 reviews in a single call
+const result = await gplay.reviews({
   appId: 'com.dxco.pandavszombies',
   sort: gplay.sort.RATING,
   num: 3000
-}).then(console.log, console.log);
+});
+console.log(result);
 
-// This example will return the first page with 150 reviews paginated
-// just send an empty nexPaginationToken
-// you will receive a nextPaginationToken parameter in your response
-gplay.reviews({
+// Get paginated reviews (150 per page)
+const page1 = await gplay.reviews({
   appId: 'com.dxco.pandavszombies',
   sort: gplay.sort.RATING,
   paginate: true,
-  nextPaginationToken: null // you can omit this parameter
-}).then(console.log, console.log);
+  nextPaginationToken: null
+});
+console.log(page1);
 
-// This example will return 150 reviews paginated
-// for the next page (next page is the token return by the previous call)
-// you will receive a nextPaginationToken parameter in your response
-gplay.reviews({
+// Get next page
+const page2 = await gplay.reviews({
   appId: 'com.dxco.pandavszombies',
   sort: gplay.sort.RATING,
   paginate: true,
-  nextPaginationToken: 'TOKEN_FROM_THE_PREVIOUS_REQUEST' // you can omit this parameter
-}).then(console.log, console.log);
+  nextPaginationToken: page1.nextPaginationToken
+});
+console.log(page2);
 ```
 
-Results:
+Options:
+
+* `appId` (required): Unique application id for Google Play.
+* `sort` (optional, defaults to `gplay.sort.NEWEST`): Sort order. Options: `NEWEST` (2), `RATING` (3), `HELPFULNESS` (1).
+* `num` (optional, defaults to `100`): Quantity of reviews to capture (ignored if `paginate` is `true`).
+* `paginate` (optional, defaults to `false`): If `true`, returns paginated results (150 per page).
+* `nextPaginationToken` (optional): The next token to paginate (from previous call).
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<ReviewsResult>` where `ReviewsResult` is:
+
+```typescript
+{
+  data: ReviewItem[];
+  nextPaginationToken: string | null;
+}
+```
+
+Example result:
 
 ```javascript
 {
@@ -355,7 +361,7 @@ Results:
       date: '2013-11-10T18:31:42.174Z',
       score: 5,
       scoreText: '5',
-      url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies&reviewId=Z3A6QU9xcFRPRWZaVHVZZ081NlNsRW9TV0hJeklGSTBvYTBTUlFQUUJIZThBSGJDX2s1Y1o0ZXRCbUtLZmgzTE1PMUttRmpRSS1YcFgxRmx1ZXNtVzlVS0Zz'
+      url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies&reviewId=...',
       title: 'I LOVE IT',
       text: 'It has skins and snowballs everything I wanted its so cool I love it!!!!!!!!',
       replyDate: '2013-11-10T18:31:42.174Z',
@@ -363,60 +369,42 @@ Results:
       version: '1.0.2',
       thumbsUp: 29,
       criterias: [
-        {
-          criteria: 'vaf_games_simple',
-          rating: 1
-        },
-        {
-          criteria: 'vaf_games_realistic',
-          rating: 1
-        },
-        {
-          criteria: 'vaf_games_complex',
-          rating: 1
-        }
+        { criteria: 'vaf_games_simple', rating: 1 },
+        { criteria: 'vaf_games_realistic', rating: 1 },
+        { criteria: 'vaf_games_complex', rating: 1 }
       ]
     },
-    {
-      id: 'gp:AOqpTOF39mpW-6gurlkCCTV_8qnKne7O5wcFsLc6iGVot5hHpplqPCqIiVL2fjximXNujuMjwQ4pkizxGrn13x0',
-      userName: 'Millie Hawthorne',
-      userImage: 'https://lh5.googleusercontent.com/-Q_FTAEBH2Qg/AAAAAAAAAAI/AAAAAAAAAZk/W5dTdaHCUE4/w96-c-h96/photo.jpg',
-      date: '2013-11-10T18:31:42.174Z',
-      url: 'https://play.google.com/store/apps/details?id=com.dxco.pandavszombies&reviewId=Z3A6QU9xcFRPRmFHdlBFS2pGS2JVYW5Dd3kxTm1qUzRxQlYyc3Z4ZE9CYXRuc0hkclV3a09hbEFkOVdoWmw3eFN5VjF4cDJPLTg5TW5ZUjl1Zm9HOWc5NGtr',
-      score: 5,
-      scoreText: '5',
-      title: 'CAN NEVER WAIT TILL NEW UPDATE',
-      text: 'Love it but needs to pay more attention to pocket edition',
-      replyDate: null,
-      replyText: null,
-      version: null,
-      thumbsUp: 29
-      criterias: []
-    }
+    ...
   ],
   nextPaginationToken: 'NEXT_PAGINATION_TOKEN'
 }
 ```
 
 ### similar
-Returns a list of similar apps to the one specified. Options:
 
-* `appId`: the Google Play id of the application to get similar apps for.
-* `lang` (optional, defaults to `'en'`): the two letter language code used to retrieve the applications.
-* `country` (optional, defaults to `'us'`): the two letter country code used to retrieve the applications.
-* `fullDetail` (optional, defaults to `false`): if `true`, an extra request will be made for every resulting app to fetch its full detail.
-
-Example:
+Returns a list of similar apps to the one specified.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.similar({appId: "com.dxco.pandavszombies"}).then(console.log);
+const results = await gplay.similar({ appId: "com.dxco.pandavszombies" });
+console.log(results);
 ```
 
-Results:
+Options:
+
+* `appId` (required): The Google Play id of the application to get similar apps for.
+* `fullDetail` (optional, defaults to `false`): If `true`, fetch full detail for each app.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<AppListItem[]>`
+
+Example result:
+
 ```javascript
-[ { url: 'https://play.google.com/store/apps/details?id=com.creative.rambo',
+[
+  {
+    url: 'https://play.google.com/store/apps/details?id=com.creative.rambo',
     appId: 'com.creative.rambo',
     summary: 'Rambo - The Mobile Game',
     developer: 'Creative Distribution Ltd',
@@ -425,56 +413,83 @@ Results:
     score: 3.3,
     scoreText: '3.3',
     priceText: '$2.16',
-    free: false } ]
+    free: false
+  }
+]
 ```
 
 ### permissions
+
 Returns the list of permissions an app has access to.
-
-* `appId`: the Google Play id of the application to get permissions for.
-* `lang` (optional, defaults to `'en'`): the two letter language code in which to fetch the permissions.
-* `country` (optional, defaults to `'us'`): the two letter country code in which to fetch the permissions.
-* `short` (optional, defaults to `false`): if `true`, the permission names will be returned instead of
-permission/description objects.
-
-Example:
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.permissions({appId: "com.dxco.pandavszombies"}).then(console.log);
+const permissions = await gplay.permissions({ appId: "com.dxco.pandavszombies" });
+console.log(permissions);
+
+// Get short format (only permission names)
+const shortPermissions = await gplay.permissions({ 
+  appId: "com.dxco.pandavszombies",
+  short: true 
+});
+console.log(shortPermissions);
 ```
 
-Results:
+Options:
+
+* `appId` (required): The Google Play id of the application.
+* `short` (optional, defaults to `false`): If `true`, returns only permission names as strings.
+* `lang`, `country`, `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<PermissionItem[] | string[]>`
+
+Example result (full):
+
 ```javascript
-[ { permission: 'modify or delete the contents of your USB storage',
-    type: 'Storage' },
-  { permission: 'read the contents of your USB storage',
-    type: 'Storage' },
-  { permission: 'full network access',
-    type: 'Photos/Media/Files' },
-  { permission: 'view network connections',
-    type: '' } ]
+[
+  { permission: 'modify or delete the contents of your USB storage', type: 'Storage' },
+  { permission: 'read the contents of your USB storage', type: 'Storage' },
+  { permission: 'full network access', type: 'Photos/Media/Files' },
+  { permission: 'view network connections', type: '' }
+]
+```
+
+Example result (short):
+
+```javascript
+[
+  'modify or delete the contents of your USB storage',
+  'read the contents of your USB storage',
+  'full network access',
+  'view network connections'
+]
 ```
 
 ### datasafety
-Returns the data safety information of an application. The data safety is categorized into lists of "data shared",
-"data collected" and "security practices". Addtionally, the URL to the privacy policy is returned.
 
-* `appId`: the Google Play id of the application to get permissions for.
-* `lang` (optional, defaults to `'en'`): the two letter language code in which to fetch the permissions.
-
-Example:
+Returns the data safety information of an application. The data safety is categorized into "data shared", "data collected" and "security practices". Additionally, the URL to the privacy policy is returned.
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.datasafety({appId: "com.dxco.pandavszombies"}).then(console.log);
+const result = await gplay.datasafety({ appId: "com.dxco.pandavszombies" });
+console.log(result);
 ```
 
-Results:
+Options:
+
+* `appId` (required): The Google Play id of the application.
+* `lang` (optional, defaults to `'en'`): Two letter language code.
+* `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<DataSafetyResult>`
+
+Example result:
+
 ```javascript
-{ dataShared: [
+{
+  sharedData: [
     {
       data: 'User IDs',
       optional: false,
@@ -488,7 +503,7 @@ Results:
       type: 'App info and performance'
     }
   ],
-  dataCollected: [
+  collectedData: [
     {
       data: 'Name',
       optional: true,
@@ -501,133 +516,133 @@ Results:
       purpose: 'App functionality, Advertising or marketing, Account management',
       type: 'Personal info'
     },
-    {
-      data: 'User IDs',
-      optional: false,
-      purpose: 'App functionality, Analytics, Developer communications, Advertising or marketing, Fraud prevention, security, and compliance, Personalization, Account management',
-      type: 'Personal info'
-    },
-    {
-      data: 'Purchase history',
-      optional: true,
-      purpose: 'Account management',
-      type: 'Financial info'
-    },
-    {
-      data: 'Other in-app messages',
-      optional: false,
-      purpose: 'Developer communications, Fraud prevention, security, and compliance',
-      type: 'Messages'
-    },
-    {
-      data: 'Contacts',
-      optional: true,
-      purpose: 'App functionality',
-      type: 'Contacts'
-    },
-    {
-      data: 'Other actions',
-      optional: false,
-      purpose: 'App functionality, Analytics, Fraud prevention, security, and compliance',
-      type: 'App activity'
-    },
-    {
-      data: 'Crash logs',
-      optional: true,
-      purpose: 'App functionality, Analytics',
-      type: 'App info and performance'
-    },
-    {
-      data: 'Other app performance data',
-      optional: false,
-      purpose: 'Analytics',
-      type: 'App info and performance'
-    },
-    {
-      data: 'Device or other IDs',
-      optional: false,
-      purpose: 'App functionality, Analytics, Advertising or marketing, Fraud prevention, security, and compliance, Personalization, Account management',
-      type: 'Device or other IDs'
-    }
+    ...
   ],
   securityPractices: [
     {
-      practice: 'Data isn’t encrypted',
-      description: 'Your data isn’t transferred over a secure connection'
+      practice: "Data isn't encrypted",
+      description: 'Your data isn\'t transferred over a secure connection'
     },
     {
       practice: 'You can request that data be deleted',
       description: 'The developer provides a way for you to request that your data be deleted'
     }
   ],
-  privacyPolicyUrl: 'http://www.jamcity.com/privacy' }
+  privacyPolicyUrl: 'http://www.jamcity.com/privacy'
+}
 ```
 
 ### categories
+
 Retrieve a full list of categories present from dropdown menu on Google Play.
-
-* this method has no options
-
-Example:
 
 ```javascript
 import gplay from "google-play-scraper";
 
-gplay.categories().then(console.log);
+const categories = await gplay.categories();
+console.log(categories);
 ```
 
-Results:
+Options:
+
+* `throttle`, `requestOptions`: Common options.
+
+Returns: `Promise<string[]>`
+
+Example result:
+
 ```javascript
-[ 'AUTO_AND_VEHICLES',
+[
+  'AUTO_AND_VEHICLES',
   'LIBRARIES_AND_DEMO',
   'LIFESTYLE',
   'MAPS_AND_NAVIGATION',
   'BEAUTY',
   'BOOKS_AND_REFERENCE',
-  ...< 51 more items> ]
+  ...
+]
+```
+
+## Constants
+
+The library exports constants for categories, collections, sort orders, and age ranges:
+
+```javascript
+import gplay from "google-play-scraper";
+
+// Categories
+gplay.category.APPLICATION
+gplay.category.GAME_ACTION
+gplay.category.GAME_ADVENTURE
+// ... all categories from constants.ts
+
+// Collections
+gplay.collection.TOP_FREE
+gplay.collection.TOP_PAID
+gplay.collection.GROSSING
+
+// Sort orders for reviews
+gplay.sort.NEWEST    // 2
+gplay.sort.RATING    // 3
+gplay.sort.HELPFULNESS // 1
+
+// Age ranges (for FAMILY category)
+gplay.age.FIVE_UNDER  // 'AGE_RANGE1'
+gplay.age.SIX_EIGHT   // 'AGE_RANGE2'
+gplay.age.NINE_UP     // 'AGE_RANGE3'
 ```
 
 ## Memoization
 
-Since every library call performs one or multiple requests to
-an Google Play API or web page, sometimes it can be useful to cache the results
-to avoid requesting the same data twice. The `memoized` function returns a
-store object that caches its results:
+Since every library call performs one or multiple requests to Google Play, caching results can be useful to avoid requesting the same data twice. The `memoized` function returns a store object that caches its results:
 
-```js
-import {memoized as m} from "google-play-scraper"; // cache with default options
-const memoized = m();// cache with customized options
-const memoizedCustom = m({ maxAge: 1000 * 60 });// cache with customized options
+```javascript
+import { memoized } from "google-play-scraper";
 
-// first call will hit google play and cache the results
-memoized.developer({devId: "DxCo Games"}).then(console.log);
+// Cache with default options (5 min TTL, max 1000 entries per method)
+const memoized = memoized();
 
-// second call will return cached results
-memoized.developer({devId: "DxCo Games"}).then(console.log);
+// Cache with custom options
+const memoizedCustom = memoized({ maxAge: 1000 * 60 * 10 }); // 10 minutes
+
+// First call hits Google Play and caches results
+await memoized.developer({ devId: "DxCo Games" });
+
+// Second call returns cached results
+await memoized.developer({ devId: "DxCo Games" });
 ```
 
-The options available are those supported by the [memoizee](https://github.com/medikoo/memoizee) module.
-By default up to 1000 values are cached by each method and they expire after 5 minutes.
+Options are those supported by the [memoizee](https://github.com/medikoo/memoizee) module. By default, up to 1000 values are cached per method and they expire after 5 minutes.
 
 ## Throttling
 
-All methods on the scraper have to access the Google Play server in one
-form or another. When making too many requests in a short period of time
-(specially when using the `fullDetail` option), it is common to hit Google Play's
-throttling limit. That means requests start getting status 503 responses with
-a captcha to verify if the requesting entity is a human (which is not :P).
-In those cases the requesting IP can be banned from making further requests for a
-while (usually around an hour).
+All methods access the Google Play server. Making too many requests in a short period (especially with `fullDetail`) can hit Google Play's throttling limit, resulting in 503 responses with captchas and temporary IP bans.
 
-To avoid this situation, all methods now support a `throttle` property, which
-defines an upper bound to the amount of requests that will be attempted per second.
-Once that limit is reached, further requests will be held until the second passes.
+To avoid this, all methods support a `throttle` property defining an upper bound of requests per second:
 
-```js
+```javascript
 import gplay from "google-play-scraper";
 
-// the following method will perform batches of 10 requests per second
-gplay.search({term: 'panda', throttle: 10}).then(console.log);
+// Perform batches of 10 requests per second
+await gplay.search({ term: 'panda', throttle: 10 });
 ```
 
 By default, no throttling is applied.
+
+## TypeScript
+
+This library is written in TypeScript and includes full type definitions. Import types directly:
+
+```typescript
+import type { 
+  AppItem, 
+  AppItemFullDetail, 
+  AppListItem, 
+  ReviewsResult, 
+  ReviewItem,
+  PermissionItem,
+  DataSafetyResult,
+  DataEntry,
+  SecurityPractice
+} from "google-play-scraper";
+```
