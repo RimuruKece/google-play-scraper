@@ -1,6 +1,6 @@
 {
-  "name": "google-play-scraper",
-  "version": "10.1.3",
+  "name": "@RimuruKece/google-play-scraper",
+  "version": "1.0.0",
   "description": "scrapes app data from google play store",
   "type": "module",
   "exports": "./dist/index.js",
@@ -8,25 +8,29 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "tsc",
+    "typecheck": "tsc --noEmit",
     "prepublishOnly": "tsc",
     "test": "node --import tsx/esm node_modules/.bin/mocha --timeout 5000 'test/**/*.ts'",
     "lint": "eslint ."
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/facundoolano/google-play-scraper"
+    "url": "https://github.com/RimuruKece/google-play-scraper"
   },
   "keywords": [
     "google",
     "play",
     "scraper"
   ],
-  "author": "Facundo Olano",
+  "author": "RimuruKece",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/facundoolano/google-play-scraper/issues"
+  "publishConfig": {
+    "access": "public"
   },
-  "homepage": "https://github.com/facundoolano/google-play-scraper",
+  "bugs": {
+    "url": "https://github.com/RimuruKece/google-play-scraper/issues"
+  },
+  "homepage": "https://github.com/RimuruKece/google-play-scraper",
   "dependencies": {
     "@esbuild/android-arm64": "^0.28.1",
     "cheerio": "^1.0.0-rc.12",

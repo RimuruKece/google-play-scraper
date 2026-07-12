@@ -13,8 +13,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "types": ["mocha", "node"]
+    "types": ["node"]
   },
-  "include": ["index.ts", "lib/**/*.ts", "test/**/*.ts"],
+  "include": ["index.ts", "lib/**/*.ts"],
   "exclude": ["node_modules", "dist"]
 }

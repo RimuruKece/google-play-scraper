@@ -1,0 +1,12 @@
+/lib/
+/test/
+/index.ts
+/types.ts
+/tsconfig.json
+/tsconfig.eslint.json
+/.eslintrc
+/.eslintignore
+/.editorconfig
+/.github/
+/.gitignore
+/package-lock.json
