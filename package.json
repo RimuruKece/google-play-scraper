@@ -1,5 +1,5 @@
 {
-  "name": "@RimuruKece/google-play-scraper",
+  "name": "@rimurukece/google-play-scraper",
   "version": "1.0.0",
   "description": "scrapes app data from google play store",
   "type": "module",
