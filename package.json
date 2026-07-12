@@ -32,7 +32,6 @@
   },
   "homepage": "https://github.com/RimuruKece/google-play-scraper",
   "dependencies": {
-    "@esbuild/android-arm64": "^0.28.1",
     "cheerio": "^1.0.0-rc.12",
     "debug": "^3.1.0",
     "got": "^11.8.6",
