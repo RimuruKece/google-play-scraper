@@ -1,4 +1,4 @@
-# google-play-scraper [![workflow](https://github.com/RimuruKece/google-play-scraper/actions/workflows/tests.yml/badge.svg)](https://github.com/RimuruKece/google-play-scraper/actions/workflows/tests.yml)
+# google-play-scraper [![CI](https://github.com/RimuruKece/google-play-scraper/actions/workflows/ci.yml/badge.svg)](https://github.com/RimuruKece/google-play-scraper/actions/workflows/ci.yml)
 
 Node.js module to scrape application data from the Google Play store. Written in TypeScript with full type definitions.
 
