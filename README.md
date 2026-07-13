@@ -644,6 +644,19 @@ gplay.setAuroraOSS({
 > [!TIP]
 > Once global configuration is set, any call to `gplay.app()` that encounters a `VARY` result will automatically trigger the fallback to fetch the concrete version and SDK level.
 
+#### How to Obtain the AAS Token
+
+The `aasToken` (Android Account Services Token) can be retrieved using the Aurora Authenticator app:
+1. Download and install the Aurora Authenticator app from the [whyorean/Authenticator GitHub Releases](https://github.com/whyorean/Authenticator/releases).
+2. Open the app and log in with your Google account credentials.
+3. The app will generate and display your **AAS Token** (typically starting with `aas/oauth2_play_token/...`). Copy this token to use in the setup.
+
+> [!CAUTION]
+> **Account Safety and Usage Risks:**
+> * **Suspension Risk:** Programmatic API check-ins violate Google's Terms of Service. **NEVER use your primary/personal Google account.** Always use a dedicated dummy or throwaway Google account.
+> * **Token Expiration:** AAS tokens are temporary. The token will expire over time or immediately upon a password change, requiring periodic regeneration through the Authenticator app.
+
+
 ### Custom Device Profiles
 
 If you want to simulate a custom device configuration, set the device to `AuroraDevice.CUSTOM` and supply your own properties file:
