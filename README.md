@@ -637,7 +637,7 @@ import gplay, { AuroraDevice } from "@RimuruKece/google-play-scraper";
 gplay.setAuroraOSS({
   email: "your-google-email@gmail.com",
   aasToken: "your-aas-token",
-  device: AuroraDevice.PIXEL_7_PRO // Optional: PIXEL_7_PRO, GALAXY_S23_ULTRA, ONEPLUS_11, PIXEL_8_PRO, GALAXY_S24, CUSTOM
+  device: AuroraDevice.PIXEL_7_PRO // Optional: choose from 70+ built-in devices (e.g. PIXEL_7_PRO, GALAXY_S25_ULTRA_ANDROID_15_ARM64, NOTHING_PHONE_1_ANDROID_14_ARM64, CUSTOM)
 });
 ```
 
