@@ -8,7 +8,7 @@ Node.js module to scrape application data from the Google Play store. Written in
 ## Installation
 
 ```bash
-npm install @RimuruKece/google-play-scraper
+npm install @rimurukece/google-play-scraper
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ npm install @RimuruKece/google-play-scraper
 All methods are available via a default export. All methods return promises.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 ```
 
 Available methods:
@@ -46,7 +46,7 @@ Options shared across most methods:
 Retrieves the full detail of an application.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const result = await gplay.app({ appId: 'com.google.android.apps.translate' });
 console.log(result);
@@ -135,7 +135,7 @@ Example result:
 Retrieve a list of applications from one of the collections at Google Play.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const results = await gplay.list({
   category: gplay.category.GAME_ACTION,
@@ -182,7 +182,7 @@ Example result:
 Retrieves a list of apps that result from searching by the given term.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const results = await gplay.search({
   term: "panda",
@@ -227,7 +227,7 @@ Example result:
 Returns the list of applications by the given developer name.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const results = await gplay.developer({ devId: "DxCo Games" });
 console.log(results);
@@ -268,7 +268,7 @@ Example result:
 Given a string returns up to five suggestions to complete a search query term.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const suggestions = await gplay.suggest({ term: 'panda' });
 console.log(suggestions);
@@ -294,7 +294,7 @@ Retrieves a page of reviews for a specific application.
 Note: This method returns reviews in a specific language (English by default). To get more reviews, try different languages. Also, the counter displayed on the Google Play page refers to the total number of 1-5 star ratings, not written reviews count.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 // Get 3000 reviews in a single call
 const result = await gplay.reviews({
@@ -377,7 +377,7 @@ Example result:
 Returns a list of similar apps to the one specified.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const results = await gplay.similar({ appId: "com.dxco.pandavszombies" });
 console.log(results);
@@ -415,7 +415,7 @@ Example result:
 Returns the list of permissions an app has access to.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const permissions = await gplay.permissions({ appId: "com.dxco.pandavszombies" });
 console.log(permissions);
@@ -463,7 +463,7 @@ Example result (short):
 Returns the data safety information of an application. The data safety is categorized into "data shared", "data collected" and "security practices". Additionally, the URL to the privacy policy is returned.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const result = await gplay.datasafety({ appId: "com.dxco.pandavszombies" });
 console.log(result);
@@ -529,7 +529,7 @@ Example result:
 Retrieve a full list of categories present from dropdown menu on Google Play.
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 const categories = await gplay.categories();
 console.log(categories);
@@ -560,7 +560,7 @@ Example result:
 The library exports constants for categories, collections, sort orders, and age ranges:
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 // Categories
 gplay.category.APPLICATION
@@ -589,7 +589,7 @@ gplay.age.NINE_UP     // 'AGE_RANGE3'
 Since every library call performs one or multiple requests to Google Play, caching results can be useful to avoid requesting the same data twice. The `memoized` function returns a store object that caches its results:
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 // Cache with default options (5 min TTL, max 1000 entries per method)
 const memoized = gplay.memoized();
@@ -613,7 +613,7 @@ All methods access the Google Play server. Making too many requests in a short p
 To avoid this, all methods support a `throttle` property defining an upper bound of requests per second:
 
 ```javascript
-import gplay from "@RimuruKece/google-play-scraper";
+import gplay from "@rimurukece/google-play-scraper";
 
 // Perform batches of 10 requests per second
 await gplay.search({ term: 'panda', throttle: 10 });
@@ -632,7 +632,7 @@ To resolve the concrete version number and target OS level, this scraper impleme
 To enable this fallback, you must provide your Google account credentials globally:
 
 ```typescript
-import gplay, { AuroraDevice } from "@RimuruKece/google-play-scraper";
+import gplay, { AuroraDevice } from "@rimurukece/google-play-scraper";
 
 gplay.setAuroraOSS({
   email: "your-google-email@gmail.com",
@@ -684,5 +684,5 @@ import type {
   DataSafetyResult,
   DataEntry,
   SecurityPractice
-} from "@RimuruKece/google-play-scraper";
+} from "@rimurukece/google-play-scraper";
 ```
