@@ -649,7 +649,7 @@ gplay.setAuroraOSS({
 The `aasToken` (Android Account Services Token) can be retrieved using the Aurora Authenticator app:
 1. Download and install the Aurora Authenticator app from the [whyorean/Authenticator GitHub Releases](https://github.com/whyorean/Authenticator/releases).
 2. Open the app and log in with your Google account credentials.
-3. The app will generate and display your **AAS Token** (typically starting with `aas/oauth2_play_token/...`). Copy this token to use in the setup.
+3. The app will generate and display your **AAS Token** (typically starting with `aas_et/...`). Copy this token to use in the setup.
 
 > [!CAUTION]
 > **Account Safety and Usage Risks:**
