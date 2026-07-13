@@ -3,7 +3,7 @@
 Node.js module to scrape application data from the Google Play store. Written in TypeScript with full type definitions.
 
 > [!NOTE]
-> This project is a fork of [facundoolano/google-play-scraper](https://github.com/facundoolano/google-play-scraper), migrated to TypeScript with full type definitions.
+> This project is a fork of [facundoolano/google-play-scraper](https://github.com/facundoolano/google-play-scraper), rewritten in TypeScript with full type safety. It also includes an integrated **AuroraOSS fallback mechanism** to resolve variable version outputs (such as `VARY` or `Varies with device`) by querying the official Google Play API directly.
 
 ## Installation
 
@@ -59,6 +59,8 @@ Options:
 * `country` (optional, defaults to `'us'`): Two letter country code.
 * `throttle` (optional): Requests per second limit.
 * `requestOptions` (optional): Extra HTTP request options.
+* `auroraDevice` (optional): The `AuroraDevice` profile to use for fallback check (e.g. `AuroraDevice.PIXEL_7_PRO`).
+* `auroraDeviceFile` (optional): Absolute path to a custom device properties file when using `AuroraDevice.CUSTOM`.
 
 Returns: `Promise<AppItemFullDetail>`
 
@@ -618,6 +620,41 @@ await gplay.search({ term: 'panda', throttle: 10 });
 ```
 
 By default, no throttling is applied.
+
+## AuroraOSS Fallback (Resolving "Varies with device")
+
+Google Play Store sometimes hides the exact version code or target Android version of an app on the web interface, returning `VARY` or `Varies with device` instead. 
+
+To resolve the concrete version number and target OS level, this scraper implements a fallback mechanism using **AuroraOSS** to fetch exact app specifications by performing official Google Play API checkins.
+
+### Setup
+
+To enable this fallback, you must provide your Google account credentials globally:
+
+```typescript
+import gplay, { AuroraDevice } from "@RimuruKece/google-play-scraper";
+
+gplay.setAuroraOSS({
+  email: "your-google-email@gmail.com",
+  aasToken: "your-aas-token",
+  device: AuroraDevice.PIXEL_7_PRO // Optional: PIXEL_7_PRO, GALAXY_S23_ULTRA, ONEPLUS_11, PIXEL_8_PRO, GALAXY_S24, CUSTOM
+});
+```
+
+> [!TIP]
+> Once global configuration is set, any call to `gplay.app()` that encounters a `VARY` result will automatically trigger the fallback to fetch the concrete version and SDK level.
+
+### Custom Device Profiles
+
+If you want to simulate a custom device configuration, set the device to `AuroraDevice.CUSTOM` and supply your own properties file:
+
+```typescript
+const result = await gplay.app({
+  appId: "com.whatsapp",
+  auroraDevice: AuroraDevice.CUSTOM,
+  auroraDeviceFile: "/path/to/custom_device.properties"
+});
+```
 
 ## TypeScript
 
